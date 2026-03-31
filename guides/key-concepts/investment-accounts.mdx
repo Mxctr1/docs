@@ -19,6 +19,49 @@ Each holding tracks:
 - **Amount** - Total current value (quantity x price)
 - **Cost Basis** - What you originally paid
 
+## Recording Trades
+
+Investment accounts support manual trade entry to track your buy and sell activity.
+
+### Trade Types
+
+When recording a trade, you can specify:
+
+- **Buy**: Purchase of securities
+- **Sell**: Sale of securities
+- **Dividend**: Dividend income (recorded as a trade with qty: 0 and price: 0)
+- **Interest**: Interest income (recorded as a trade with qty: 0 and price: 0)
+
+### Recording Dividends and Interest
+
+Dividends and interest are recorded as trades to maintain data integrity:
+
+**Dividends:**
+- Require a security selection (the security that paid the dividend)
+- Recorded with qty: 0 and price: 0
+- Amount represents the dividend payment received
+
+**Interest:**
+- Security selection is optional
+- If no security is selected, Sure creates a synthetic cash security for the account
+- Recorded with qty: 0 and price: 0
+- Amount represents the interest earned
+
+This approach ensures all investment income is properly tracked while maintaining the requirement that trades reference a security.
+
+### Transaction Fees
+
+Trades support an optional fee field to track transaction costs:
+
+- Fees are included in the total amount calculation: `qty × price + fee`
+- Fees default to 0 if not specified
+- Useful for tracking brokerage commissions, exchange fees, or other trading costs
+
+To add a fee to a trade:
+1. Open the trade form (create or edit)
+2. Enter the fee amount in the fee field
+3. The total amount updates automatically to include the fee
+
 ## Securities Types
 
 Sure supports various security types:

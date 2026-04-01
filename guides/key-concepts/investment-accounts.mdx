@@ -99,6 +99,22 @@ After unlocking:
 
 Activity labels help you classify investment transactions. They appear as badges in your transaction list and help you understand your investment activity at a glance.
 
+### Recording Dividends and Interest
+
+Dividends and interest are recorded as **trades** (not regular transactions) to maintain data integrity:
+
+- **Dividends** require a security to be selected (the stock/fund paying the dividend)
+- **Interest** can optionally specify a security, or will use a synthetic cash security for the account
+- Both are recorded with `qty: 0` and `price: 0` to preserve the `security_id NOT NULL` constraint on trades
+- This approach matches how brokerages handle investment income internally
+
+When creating a dividend or interest entry:
+1. Select the transaction type (Dividend or Interest)
+2. For dividends, select the security paying the dividend (required)
+3. For interest, optionally select a security (defaults to account cash if none selected)
+4. Enter the amount received
+5. The entry is saved as a trade with the appropriate label
+
 ### Available Activity Labels
 
 | Label | Description |

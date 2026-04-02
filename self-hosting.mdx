@@ -250,6 +250,38 @@ docker compose logs backup
 ls -lh /opt/sure-data/backups
 ```
 
+## Advanced Configuration
+
+### SSL Certificate Configuration
+
+If you're running Sure in an environment with custom SSL certificates (e.g., corporate networks with internal CAs), you can configure Sure to use a custom CA certificate file:
+
+1. Set the `SSL_CA_FILE` environment variable in your `.env` file:
+
+```txt
+SSL_CA_FILE=/path/to/your/ca-bundle.crt
+```
+
+2. Mount the certificate file in your `compose.yml`:
+
+```yml
+services:
+  web:
+    volumes:
+      - /path/to/your/ca-bundle.crt:/path/to/your/ca-bundle.crt:ro
+```
+
+3. Restart the application:
+
+```bash
+docker compose restart web worker
+```
+
+This configuration is useful when:
+- Your organization uses internal certificate authorities
+- You need to connect to services with self-signed certificates
+- You're behind a corporate proxy that intercepts SSL connections
+
 ## Troubleshooting
 
 ### Database connection errors

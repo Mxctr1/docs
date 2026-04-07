@@ -61,6 +61,7 @@
             "group": "Third party providers",
             "pages": [
               "providers/overview",
+              "providers/binance",
               "providers/enable-banking",
               "providers/lunchflow",
               "providers/simplefin",

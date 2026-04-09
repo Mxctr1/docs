@@ -82,6 +82,28 @@ POSTGRES_PASSWORD="your-database-password-here"
 
 Replace the placeholder values with your generated secret key and a secure database password.
 
+### Market data provider variables
+
+Sure supports multiple securities pricing providers. You can configure them through environment variables or in the UI under **Settings > Self-Hosting**. See [market data providers](/providers/market-data) for details on each provider.
+
+```txt
+# Comma-separated list of securities providers (e.g. yahoo_finance,tiingo,mfapi)
+SECURITIES_PROVIDERS="yahoo_finance"
+
+# Exchange rate provider (default: twelve_data)
+EXCHANGE_RATE_PROVIDER="twelve_data"
+
+# API keys (only needed for providers that require them)
+TWELVE_DATA_API_KEY="your-key-here"
+TIINGO_API_KEY="your-key-here"
+EODHD_API_KEY="your-key-here"
+ALPHA_VANTAGE_API_KEY="your-key-here"
+```
+
+<Note>
+Setting `SECURITIES_PROVIDERS` as an environment variable takes precedence over the UI setting. Leave it unset to manage providers from the UI only.
+</Note>
+
 ## Running the application
 
 ### Start the application

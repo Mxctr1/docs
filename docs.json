@@ -61,6 +61,7 @@
             "group": "Third party providers",
             "pages": [
               "providers/overview",
+              "providers/market-data",
               "providers/enable-banking",
               "providers/lunchflow",
               "providers/simplefin",

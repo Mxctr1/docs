@@ -1,0 +1,81 @@
+---
+title: Binance
+description: Track cryptocurrency prices and holdings using Binance public market data
+---
+
+Binance is a securities provider that supplies cryptocurrency price data from the Binance exchange. It uses Binance's public market data API, so no API key or account is required.
+
+<Note>
+This provider is used for security price lookups and does not sync account balances or transactions. To track crypto holdings, add them manually or use a wallet-syncing provider like [CoinStats](/providers/coinstats) or [Coinbase](/providers/coinbase).
+</Note>
+
+## How it works
+
+Binance acts as a **securities provider** in Sure, similar to how Twelve Data or Yahoo Finance provide stock prices. When you search for a cryptocurrency or track holdings in an investment account, Sure can resolve prices through Binance's public API.
+
+Specifically, Binance provides:
+
+- **Security search**: Find cryptocurrencies by symbol (e.g., BTC, ETH, SOL)
+- **Historical prices**: Daily close prices for any date range
+- **Security metadata**: Basic information about each trading pair
+
+## Supported currencies
+
+Binance prices are available in the following quote currencies:
+
+| Quote currency | Display currency | Notes |
+|---|---|---|
+| USDT | USD | Default; Binance's dominant dollar-quoted pairs |
+| EUR | EUR | Euro-quoted pairs |
+| JPY | JPY | Japanese yen-quoted pairs |
+| BRL | BRL | Brazilian real-quoted pairs |
+| TRY | TRY | Turkish lira-quoted pairs |
+
+When you search for a cryptocurrency, Sure returns results across all available quote currencies, ranked by relevance. USDT pairs are surfaced as USD for simplicity.
+
+<Info>
+GBP-quoted pairs are not currently available on Binance. If your family currency is GBP, Sure converts from USD using your configured exchange rates.
+</Info>
+
+## Setup
+
+No configuration is needed. Binance is automatically available as a securities provider for all Sure instances. It requires no API key, no account, and no environment variables.
+
+## How securities are resolved
+
+When you add a holding or search for a security, Sure checks its configured securities providers in order. Binance is included in this chain alongside providers like Twelve Data and Yahoo Finance.
+
+A search for "BTC" returns results like:
+
+- **BTCUSD** (Bitcoin priced in USD)
+- **BTCEUR** (Bitcoin priced in EUR)
+- **BTCJPY** (Bitcoin priced in JPY)
+
+Each result includes the Binance exchange identifier (`BNCX`) so Sure can fetch the correct price history.
+
+## Price data
+
+### Historical prices
+
+Sure fetches daily closing prices from Binance using 1-day candlestick (kline) data. For long date ranges, Sure automatically paginates through the data in batches of up to 1,000 days.
+
+### Price availability
+
+- Prices are only available from the date a trading pair was listed on Binance
+- Delisted pairs return prices up to their last trading day
+- If a pair has no data for a requested date, no price is returned for that day
+
+## Limitations
+
+- Only provides price data, not account syncing or transaction history
+- Limited to trading pairs actively listed on Binance (or historically listed)
+- Subject to Binance API rate limits
+- Crypto logos depend on availability from the logo provider
+
+## Getting help
+
+If you encounter issues with cryptocurrency price data:
+
+- Check the [troubleshooting guide](/guides/knowledge-base/troubleshooting)
+- Ask in the [Discord](https://discord.gg/36ZGBsxYEK)
+- Open an [issue](https://github.com/we-promise/sure/issues/new/choose)

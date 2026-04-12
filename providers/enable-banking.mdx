@@ -9,12 +9,13 @@ Enable Banking is a free third-party provider that allows you to connect Europea
 
 Enable Banking uses the PSD2 open banking framework to securely access your bank data:
 
-1. Select your bank from the list of supported institutions
-2. Authorize Sure to access your account through your bank's authentication flow
-3. Sure syncs your account balances and transactions
-4. Data is refreshed periodically to keep your information current
+1. Select your country and browse available banks (sorted alphabetically, with beta banks listed last)
+2. Choose your account type (personal or business)
+3. Authorize Sure to access your account through your bank's authentication flow
+4. Sure syncs your account balances and transactions
+5. Data is refreshed periodically to keep your information current
 
-All authentication happens directly with your bank. Enable Banking and Sure never see your banking credentials.
+The authorization flow is presented in your browser's language when supported by the bank. All authentication happens directly with your bank. Enable Banking and Sure never see your banking credentials.
 
 ## Supported regions
 
@@ -57,10 +58,20 @@ When syncing transactions, you can:
 
 ## Supported account types
 
-Enable Banking supports both personal and business accounts:
+Enable Banking supports both personal and business accounts. You can select the account type during the bank connection flow:
 
-- **Personal accounts**: Standard consumer bank accounts
-- **Business accounts**: Business banking accounts (specify `psu_type: "business"`)
+- **Personal accounts**: Standard consumer bank accounts (default)
+- **Business accounts**: Business banking accounts
+
+If your selected bank only supports one account type, Sure automatically adjusts to the supported type.
+
+## Authentication methods
+
+Enable Banking works with banks that use redirect-based authentication (OAuth). When you select a bank, Sure checks whether the bank's authentication method is compatible.
+
+<Warning>
+Banks that use decoupled authentication (requiring a separate device to approve access) are not currently supported. If you select a bank that requires decoupled authentication, you will be redirected back with an informational message. You can add these accounts manually instead.
+</Warning>
 
 ## API reference
 
@@ -70,6 +81,7 @@ For technical details about the Enable Banking API, see the [official documentat
 
 - Only supports banks in EU/EEA countries
 - Requires PSD2-compliant banks
+- Banks using decoupled authentication are not supported
 - Session validity is limited to 90 days
 - Subject to Enable Banking API rate limits
 - Some banks may have additional authentication requirements

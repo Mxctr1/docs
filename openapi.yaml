@@ -350,6 +350,271 @@ components:
           format: uuid
         name:
           type: string
+    MerchantDetail:
+      type: object
+      required:
+      - id
+      - name
+      - type
+      - created_at
+      - updated_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        type:
+          type: string
+          description: Merchant type (FamilyMerchant or ProviderMerchant)
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    Security:
+      type: object
+      required:
+      - id
+      - ticker
+      - name
+      properties:
+        id:
+          type: string
+          format: uuid
+        ticker:
+          type: string
+        name:
+          type: string
+    HoldingDetail:
+      type: object
+      required:
+      - id
+      - date
+      - qty
+      - price
+      - amount
+      - currency
+      - account
+      - security
+      - created_at
+      - updated_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        date:
+          type: string
+          format: date
+        qty:
+          type: string
+        price:
+          type: string
+          description: Formatted price with currency symbol
+        amount:
+          type: string
+          description: Formatted total value with currency symbol
+        currency:
+          type: string
+        cost_basis_source:
+          type: string
+          nullable: true
+        account:
+          "$ref": "#/components/schemas/Account"
+        security:
+          "$ref": "#/components/schemas/Security"
+        avg_cost:
+          type: string
+          nullable: true
+          description: Formatted average cost basis per share
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    HoldingCollection:
+      type: object
+      required:
+      - holdings
+      - pagination
+      properties:
+        holdings:
+          type: array
+          items:
+            "$ref": "#/components/schemas/HoldingDetail"
+        pagination:
+          "$ref": "#/components/schemas/Pagination"
+    Trade:
+      type: object
+      required:
+      - id
+      - date
+      - amount
+      - currency
+      - name
+      - qty
+      - price
+      - account
+      - created_at
+      - updated_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        date:
+          type: string
+          format: date
+        amount:
+          type: string
+          description: Formatted total trade value with currency symbol
+        currency:
+          type: string
+        name:
+          type: string
+        notes:
+          type: string
+          nullable: true
+        qty:
+          type: string
+          description: Trade quantity (negative for sells)
+        price:
+          type: string
+          description: Formatted price per unit with currency symbol
+        investment_activity_label:
+          type: string
+          nullable: true
+          description: Activity label (e.g., Buy, Sell, Dividend)
+        account:
+          "$ref": "#/components/schemas/Account"
+        security:
+          "$ref": "#/components/schemas/Security"
+          nullable: true
+        category:
+          type: object
+          nullable: true
+          properties:
+            id:
+              type: string
+              format: uuid
+            name:
+              type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    TradeCollection:
+      type: object
+      required:
+      - trades
+      - pagination
+      properties:
+        trades:
+          type: array
+          items:
+            "$ref": "#/components/schemas/Trade"
+        pagination:
+          "$ref": "#/components/schemas/Pagination"
+    Valuation:
+      type: object
+      required:
+      - id
+      - date
+      - amount
+      - currency
+      - account
+      - created_at
+      - updated_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        date:
+          type: string
+          format: date
+        amount:
+          type: string
+          description: Formatted balance amount with currency symbol
+        currency:
+          type: string
+        notes:
+          type: string
+          nullable: true
+        kind:
+          type: string
+          nullable: true
+          description: Type of valuation entry
+        account:
+          "$ref": "#/components/schemas/Account"
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    MoneyValue:
+      type: object
+      description: Monetary value with amount and currency
+      properties:
+        amount:
+          type: string
+        currency:
+          type: string
+    BalanceSheetResponse:
+      type: object
+      required:
+      - currency
+      - net_worth
+      - assets
+      - liabilities
+      properties:
+        currency:
+          type: string
+          description: Family's primary currency code
+        net_worth:
+          "$ref": "#/components/schemas/MoneyValue"
+        assets:
+          "$ref": "#/components/schemas/MoneyValue"
+        liabilities:
+          "$ref": "#/components/schemas/MoneyValue"
+    SyncResponse:
+      type: object
+      required:
+      - id
+      - status
+      - message
+      properties:
+        id:
+          type: string
+          format: uuid
+        status:
+          type: string
+        syncable_type:
+          type: string
+        syncable_id:
+          type: string
+          format: uuid
+        syncing_at:
+          type: string
+          format: date-time
+          nullable: true
+        completed_at:
+          type: string
+          format: date-time
+          nullable: true
+        window_start_date:
+          type: string
+          format: date
+          nullable: true
+        window_end_date:
+          type: string
+          format: date
+          nullable: true
+        message:
+          type: string
     Tag:
       type: object
       required:
@@ -502,6 +767,30 @@ components:
         account_col_label:
           type: string
           nullable: true
+        qty_col_label:
+          type: string
+          nullable: true
+          description: Header name for the quantity column (trade imports)
+        ticker_col_label:
+          type: string
+          nullable: true
+          description: Header name for the ticker/symbol column (trade imports)
+        price_col_label:
+          type: string
+          nullable: true
+          description: Header name for the price column (trade imports)
+        entity_type_col_label:
+          type: string
+          nullable: true
+          description: Header name for the entity type column
+        currency_col_label:
+          type: string
+          nullable: true
+          description: Header name for the currency column
+        exchange_operating_mic_col_label:
+          type: string
+          nullable: true
+          description: Header name for the exchange operating MIC column
         date_format:
           type: string
           nullable: true
@@ -761,6 +1050,628 @@ paths:
             application/json:
               schema:
                 "$ref": "#/components/schemas/ErrorResponse"
+  "/api/v1/merchants":
+    get:
+      summary: List merchants
+      description: List all merchants available to the family, including both family-owned
+        and provider merchants assigned to transactions.
+      tags:
+      - Merchants
+      security:
+      - apiKeyAuth: []
+      responses:
+        '200':
+          description: merchants listed
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/MerchantDetail"
+  "/api/v1/merchants/{id}":
+    parameters:
+    - name: id
+      in: path
+      required: true
+      description: Merchant ID
+      schema:
+        type: string
+    get:
+      summary: Retrieve a merchant
+      tags:
+      - Merchants
+      security:
+      - apiKeyAuth: []
+      responses:
+        '200':
+          description: merchant retrieved
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/MerchantDetail"
+        '404':
+          description: merchant not found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ErrorResponse"
+  "/api/v1/holdings":
+    get:
+      summary: List holdings
+      description: List all holdings across the family's investment and crypto accounts.
+      tags:
+      - Holdings
+      security:
+      - apiKeyAuth: []
+      parameters:
+      - name: page
+        in: query
+        required: false
+        description: 'Page number (default: 1)'
+        schema:
+          type: integer
+      - name: per_page
+        in: query
+        required: false
+        description: 'Items per page (default: 25, max: 100)'
+        schema:
+          type: integer
+      - name: account_id
+        in: query
+        required: false
+        description: Filter by account ID
+        schema:
+          type: string
+          format: uuid
+      - name: account_ids
+        in: query
+        required: false
+        description: Filter by multiple account IDs
+        schema:
+          type: array
+          items:
+            type: string
+      - name: security_id
+        in: query
+        required: false
+        description: Filter by security ID
+        schema:
+          type: string
+          format: uuid
+      - name: date
+        in: query
+        required: false
+        description: Filter by exact date
+        schema:
+          type: string
+          format: date
+      - name: start_date
+        in: query
+        required: false
+        description: Filter holdings from this date
+        schema:
+          type: string
+          format: date
+      - name: end_date
+        in: query
+        required: false
+        description: Filter holdings until this date
+        schema:
+          type: string
+          format: date
+      responses:
+        '200':
+          description: holdings listed
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HoldingCollection"
+  "/api/v1/holdings/{id}":
+    parameters:
+    - name: id
+      in: path
+      required: true
+      description: Holding ID
+      schema:
+        type: string
+    get:
+      summary: Retrieve a holding
+      tags:
+      - Holdings
+      security:
+      - apiKeyAuth: []
+      responses:
+        '200':
+          description: holding retrieved
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HoldingDetail"
+        '404':
+          description: holding not found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ErrorResponse"
+  "/api/v1/trades":
+    get:
+      summary: List trades
+      description: List all trades across the family's investment and crypto accounts.
+      tags:
+      - Trades
+      security:
+      - apiKeyAuth: []
+      parameters:
+      - name: page
+        in: query
+        required: false
+        description: 'Page number (default: 1)'
+        schema:
+          type: integer
+      - name: per_page
+        in: query
+        required: false
+        description: 'Items per page (default: 25, max: 100)'
+        schema:
+          type: integer
+      - name: account_id
+        in: query
+        required: false
+        description: Filter by account ID
+        schema:
+          type: string
+          format: uuid
+      - name: account_ids
+        in: query
+        required: false
+        description: Filter by multiple account IDs
+        schema:
+          type: array
+          items:
+            type: string
+      - name: start_date
+        in: query
+        required: false
+        description: Filter trades from this date
+        schema:
+          type: string
+          format: date
+      - name: end_date
+        in: query
+        required: false
+        description: Filter trades until this date
+        schema:
+          type: string
+          format: date
+      responses:
+        '200':
+          description: trades listed
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/TradeCollection"
+    post:
+      summary: Create trade
+      description: Create a new trade in an investment or crypto account.
+      tags:
+      - Trades
+      security:
+      - apiKeyAuth: []
+      parameters: []
+      responses:
+        '201':
+          description: trade created
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Trade"
+        '422':
+          description: validation error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ErrorResponse"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                trade:
+                  type: object
+                  properties:
+                    account_id:
+                      type: string
+                      format: uuid
+                      description: Account ID (must be an investment or crypto account)
+                    type:
+                      type: string
+                      enum:
+                      - buy
+                      - sell
+                      description: Trade type
+                    date:
+                      type: string
+                      format: date
+                      description: Trade date
+                    qty:
+                      type: number
+                      description: Quantity of shares/units (must be positive)
+                    price:
+                      type: number
+                      description: Price per share/unit (must be positive)
+                    currency:
+                      type: string
+                      description: Currency code (defaults to account currency)
+                    security_id:
+                      type: string
+                      format: uuid
+                      description: Security ID (provide this, ticker, or manual_ticker)
+                    ticker:
+                      type: string
+                      description: Security ticker symbol (alternative to security_id)
+                    manual_ticker:
+                      type: string
+                      description: Manual ticker for unlisted securities (alternative
+                        to security_id)
+                    investment_activity_label:
+                      type: string
+                      description: Activity label (e.g., Buy, Sell, Dividend)
+                    category_id:
+                      type: string
+                      format: uuid
+                      description: Category ID
+                  required:
+                  - account_id
+                  - type
+                  - date
+                  - qty
+                  - price
+              required:
+              - trade
+        required: true
+  "/api/v1/trades/{id}":
+    parameters:
+    - name: id
+      in: path
+      required: true
+      description: Trade ID
+      schema:
+        type: string
+    get:
+      summary: Retrieve a trade
+      tags:
+      - Trades
+      security:
+      - apiKeyAuth: []
+      responses:
+        '200':
+          description: trade retrieved
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Trade"
+        '404':
+          description: trade not found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ErrorResponse"
+    patch:
+      summary: Update a trade
+      tags:
+      - Trades
+      security:
+      - apiKeyAuth: []
+      parameters: []
+      responses:
+        '200':
+          description: trade updated
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Trade"
+        '404':
+          description: trade not found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ErrorResponse"
+        '422':
+          description: validation error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ErrorResponse"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                trade:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      description: Trade name/description
+                    date:
+                      type: string
+                      format: date
+                    amount:
+                      type: number
+                      description: Total trade amount
+                    currency:
+                      type: string
+                      description: Currency code
+                    notes:
+                      type: string
+                      description: Additional notes
+                    qty:
+                      type: number
+                      description: Quantity of shares/units
+                    price:
+                      type: number
+                      description: Price per share/unit
+                    type:
+                      type: string
+                      enum:
+                      - buy
+                      - sell
+                      description: Trade type (alternative to nature)
+                    nature:
+                      type: string
+                      enum:
+                      - buy
+                      - sell
+                      - inflow
+                      - outflow
+                      description: Trade nature (determines sign)
+                    investment_activity_label:
+                      type: string
+                      description: Activity label (e.g., Buy, Sell, Dividend)
+                    category_id:
+                      type: string
+                      format: uuid
+                      description: Category ID
+              required:
+              - trade
+        required: true
+    delete:
+      summary: Delete a trade
+      tags:
+      - Trades
+      security:
+      - apiKeyAuth: []
+      responses:
+        '200':
+          description: trade deleted
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/DeleteResponse"
+        '404':
+          description: trade not found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ErrorResponse"
+  "/api/v1/valuations":
+    post:
+      summary: Create valuation
+      description: Create a new balance reconciliation entry for an account.
+      tags:
+      - Valuations
+      security:
+      - apiKeyAuth: []
+      parameters: []
+      responses:
+        '201':
+          description: valuation created
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Valuation"
+        '404':
+          description: account not found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ErrorResponse"
+        '422':
+          description: validation error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ErrorResponse"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                valuation:
+                  type: object
+                  properties:
+                    account_id:
+                      type: string
+                      format: uuid
+                      description: Account ID
+                    amount:
+                      type: number
+                      description: Balance amount at the given date
+                    date:
+                      type: string
+                      format: date
+                      description: Date of the valuation
+                    notes:
+                      type: string
+                      description: Additional notes
+                  required:
+                  - account_id
+                  - amount
+                  - date
+              required:
+              - valuation
+        required: true
+  "/api/v1/valuations/{id}":
+    parameters:
+    - name: id
+      in: path
+      required: true
+      description: Valuation entry ID
+      schema:
+        type: string
+    get:
+      summary: Retrieve a valuation
+      tags:
+      - Valuations
+      security:
+      - apiKeyAuth: []
+      responses:
+        '200':
+          description: valuation retrieved
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Valuation"
+        '404':
+          description: valuation not found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ErrorResponse"
+    patch:
+      summary: Update a valuation
+      description: Update a balance reconciliation entry. When updating amount or
+        date, both fields are required.
+      tags:
+      - Valuations
+      security:
+      - apiKeyAuth: []
+      parameters: []
+      responses:
+        '200':
+          description: valuation updated
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Valuation"
+        '404':
+          description: valuation not found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ErrorResponse"
+        '422':
+          description: validation error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ErrorResponse"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                valuation:
+                  type: object
+                  properties:
+                    amount:
+                      type: number
+                      description: Balance amount (required when date is provided)
+                    date:
+                      type: string
+                      format: date
+                      description: Date of the valuation (required when amount is
+                        provided)
+                    notes:
+                      type: string
+                      description: Additional notes
+              required:
+              - valuation
+        required: true
+  "/api/v1/balance_sheet":
+    get:
+      summary: Get balance sheet
+      description: Returns the family's balance sheet data including net worth, total
+        assets, and total liabilities converted to the family's primary currency.
+      tags:
+      - Balance Sheet
+      security:
+      - apiKeyAuth: []
+      responses:
+        '200':
+          description: balance sheet retrieved
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BalanceSheetResponse"
+  "/api/v1/sync":
+    post:
+      summary: Trigger sync
+      description: Triggers a full family sync that applies all active rules, syncs
+        all connected accounts, and auto-matches transfers.
+      tags:
+      - Sync
+      security:
+      - apiKeyAuth: []
+      responses:
+        '202':
+          description: sync queued
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/SyncResponse"
+  "/api/v1/usage":
+    get:
+      summary: Get API usage
+      description: Returns API key usage and rate limit information.
+      tags:
+      - Usage
+      security:
+      - apiKeyAuth: []
+      responses:
+        '200':
+          description: usage information retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  api_key:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                      scopes:
+                        type: array
+                        items:
+                          type: string
+                      last_used_at:
+                        type: string
+                        format: date-time
+                        nullable: true
+                      created_at:
+                        type: string
+                        format: date-time
+                  rate_limit:
+                    type: object
+                    properties:
+                      tier:
+                        type: string
+                      limit:
+                        type: integer
+                      current_count:
+                        type: integer
+                      remaining:
+                        type: integer
+                      reset_in_seconds:
+                        type: integer
+                      reset_at:
+                        type: string
+                        format: date-time
   "/api/v1/chats":
     get:
       summary: List chats
@@ -1110,12 +2021,40 @@ paths:
                   - inflows_positive
                   - inflows_negative
                   description: How to interpret positive/negative amounts
+                account_col_label:
+                  type: string
+                  description: Header name for the account column
+                qty_col_label:
+                  type: string
+                  description: Header name for the quantity column (trade imports)
+                ticker_col_label:
+                  type: string
+                  description: Header name for the ticker/symbol column (trade imports)
+                price_col_label:
+                  type: string
+                  description: Header name for the price column (trade imports)
+                entity_type_col_label:
+                  type: string
+                  description: Header name for the entity type column
+                currency_col_label:
+                  type: string
+                  description: Header name for the currency column
+                exchange_operating_mic_col_label:
+                  type: string
+                  description: Header name for the exchange operating MIC column
                 col_sep:
                   type: string
                   enum:
                   - ","
                   - ";"
                   description: Column separator
+                amount_type_strategy:
+                  type: string
+                  description: Strategy for determining amount type
+                amount_type_inflow_value:
+                  type: string
+                  description: Value that indicates an inflow when using amount type
+                    strategy
         required: true
   "/api/v1/imports/{id}":
     parameters:

@@ -69,7 +69,8 @@
               "providers/simplefin",
               "providers/plaid",
               "providers/coinbase",
-              "providers/coinstats"
+              "providers/coinstats",
+              "providers/sophtron"
             ]
           },
           {

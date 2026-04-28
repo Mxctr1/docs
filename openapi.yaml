@@ -3,7 +3,7 @@ openapi: 3.0.3
 info:
   title: Sure API
   version: v1
-  description: OpenAPI documentation generated from executable request specs.
+  description: OpenAPI documentation for the Sure API.
 servers:
 - url: https://app.sure.am
   description: Production

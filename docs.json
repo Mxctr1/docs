@@ -36,7 +36,9 @@
             "group": "App features",
             "pages": [
               "guides/app-features/budgets",
+              "guides/app-features/csv-imports",
               "features/recurring-transactions",
+              "guides/app-features/family-sharing",
               "guides/app-features/settings"
             ]
           },
@@ -189,20 +191,20 @@
             ]
           },
           {
-            "group": "Users",
-            "openapi": "/openapi.yaml",
-            "pages": [
-              "DELETE /api/v1/users/reset",
-              "DELETE /api/v1/users/me"
-            ]
-          },
-          {
             "group": "Valuations",
             "openapi": "/openapi.yaml",
             "pages": [
               "POST /api/v1/valuations",
               "GET /api/v1/valuations/{id}",
               "PATCH /api/v1/valuations/{id}"
+            ]
+          },
+          {
+            "group": "Users",
+            "openapi": "/openapi.yaml",
+            "pages": [
+              "DELETE /api/v1/users/reset",
+              "DELETE /api/v1/users/me"
             ]
           }
         ]

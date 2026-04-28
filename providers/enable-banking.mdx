@@ -60,10 +60,11 @@ When syncing transactions, you can:
 Enable Banking implements intelligent content-based deduplication to handle API-level duplicates:
 
 - The API sometimes returns the same transaction multiple times with different `entry_reference` IDs
-- Sure uses a composite key based on transaction content, including date, amount, currency, creditor and debtor information, remittance information, status, and credit/debit indicator
-- When `transaction_id` is present, it's also included in the deduplication key
+- Sure uses a composite key based on transaction content, including `transaction_id` when present, plus date, amount, currency, creditor and debtor information, remittance information, status, and credit/debit indicator
 - When multiple transactions have identical content, only the first occurrence is kept
 - The `credit_debit_indicator` helps distinguish between payments and refunds of the same amount on the same day
+
+This keeps your transaction history clean and accurate even when the API returns duplicate data.
 
 > [!NOTE]
 > When `transaction_id` is nil for multiple transactions, pure content comparison applies. In rare cases, this could collapse two genuinely distinct transactions with identical fields, but this trade-off prevents the more common issue of API-level duplicates.

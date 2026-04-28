@@ -189,6 +189,54 @@ All trades support an optional fee field to track transaction costs:
 
 Activity labels help you classify investment transactions. They appear as badges in your transaction list and help you understand your investment activity at a glance.
 
+## Recording Dividends and Interest
+
+Dividends and interest are recorded as **trades** with zero quantity and zero price. This approach maintains data integrity while properly tracking investment income:
+
+- **Dividends** require a security to be selected (the stock or fund paying the dividend)
+- **Interest** can optionally specify a security, or will use a synthetic cash security for the account
+- Both appear in your holdings and trade history
+- Both are properly labeled with their respective activity types
+
+When creating a dividend or interest transaction:
+
+1. Select **Dividend** or **Interest** from the trade type dropdown
+2. For dividends: Choose the security paying the dividend (required)
+3. For interest: Optionally select a security, or leave blank to use the account's cash position
+4. Enter the amount received
+5. The trade is created with qty: 0 and price: 0, maintaining the security association
+
+## Trade Fees
+
+All trades support an optional **fee** field to track transaction costs like brokerage commissions, exchange fees, or other trading expenses.
+
+### How Fees Work
+
+- Fees are included in the total transaction amount: `Total = (Quantity × Price) + Fee`
+- Fees default to 0 if not specified
+- Fees can be added when creating or editing trades
+- The fee field auto-submits like other trade fields
+
+### Adding Fees to Trades
+
+When creating or editing a trade:
+
+1. Enter the quantity and price as usual
+2. Add the fee amount in the **Fee** field
+3. The total amount updates automatically to include the fee
+4. Save the trade
+
+Example: Buying 10 shares at $50 with a $5 commission:
+- Quantity: 10
+- Price: $50
+- Fee: $5
+- **Total: $505** (10 × $50 + $5)
+
+Fees are particularly important for:
+- Accurate cost basis calculations
+- Understanding true investment returns
+- Tax reporting and record keeping
+
 ### Available Activity Labels
 
 | Label | Description |

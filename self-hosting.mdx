@@ -342,6 +342,24 @@ SSL_VERIFY=true
 - Set to `false` to disable SSL verification (not recommended for production)
 - Only disable verification in development or testing environments
 
+If you're using a custom CA bundle, mount it into your containers in `compose.yml`:
+
+```yml
+services:
+  web:
+    volumes:
+      - /path/to/your/ca-bundle.pem:/path/to/your/ca-bundle.pem:ro
+  worker:
+    volumes:
+      - /path/to/your/ca-bundle.pem:/path/to/your/ca-bundle.pem:ro
+```
+
+Restart the application after updating your configuration:
+
+```bash
+docker compose restart web worker
+```
+
 ### Mailer SSL configuration
 
 For SMTP connections, additional SSL options are available:

@@ -290,6 +290,55 @@ docker compose logs backup
 ls -lh /opt/sure-data/backups
 ```
 
+## SSL certificate configuration
+
+For self-hosted environments using self-signed certificates or custom certificate authorities, Sure provides SSL configuration options.
+
+### Environment variables
+
+Add these variables to your `.env` file:
+
+```txt
+SSL_CA_FILE=/path/to/ca-bundle.pem
+SSL_VERIFY=true
+```
+
+**SSL_CA_FILE**: Path to a custom CA certificate bundle (PEM format). Use this when:
+- Your environment uses self-signed certificates
+- You need to trust a custom certificate authority
+- Corporate proxies inject their own certificates
+
+**SSL_VERIFY**: Controls SSL certificate verification (default: `true`)
+- Set to `false` to disable SSL verification (not recommended for production)
+- Only disable verification in development or testing environments
+
+### Mailer SSL configuration
+
+For SMTP connections, additional SSL options are available:
+
+```txt
+SMTP_ENABLE_STARTTLS_AUTO=true
+SMTP_OPENSSL_VERIFY_MODE=none
+```
+
+**SMTP_ENABLE_STARTTLS_AUTO**: Enable STARTTLS for SMTP connections (default: `true`)
+
+**SMTP_OPENSSL_VERIFY_MODE**: SSL verification mode for SMTP
+- `none`: Skip SSL verification
+- `peer`: Verify the server certificate (default)
+
+### Security considerations
+
+<Warning>
+Disabling SSL verification (`SSL_VERIFY=false` or `SMTP_OPENSSL_VERIFY_MODE=none`) exposes your application to man-in-the-middle attacks. Only use these settings in trusted networks or development environments.
+</Warning>
+
+For production deployments:
+- Use properly signed certificates from a trusted CA
+- Keep `SSL_VERIFY=true`
+- Use `SMTP_OPENSSL_VERIFY_MODE=peer`
+- If you must use self-signed certificates, provide a CA bundle via `SSL_CA_FILE`
+
 ## Troubleshooting
 
 ### Database connection errors

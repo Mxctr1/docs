@@ -3,7 +3,7 @@ openapi: 3.0.3
 info:
   title: Sure API
   version: v1
-  description: OpenAPI documentation generated from executable request specs.
+  description: OpenAPI documentation for the Sure API.
 servers:
 - url: https://app.sure.am
   description: Production
@@ -413,6 +413,8 @@ components:
       - id
       - date
       - amount
+      - amount_cents
+      - signed_amount_cents
       - currency
       - name
       - classification
@@ -429,6 +431,16 @@ components:
           format: date
         amount:
           type: string
+          description: Localized, formatted amount string (e.g. "$50.00")
+        amount_cents:
+          type: integer
+          minimum: 0
+          description: Absolute amount in minor currency units (e.g. 5000 for $50.00
+            USD). Uses the currency's minor-unit conversion factor.
+        signed_amount_cents:
+          type: integer
+          description: Signed amount in minor currency units. Positive for income,
+            negative for expenses.
         currency:
           type: string
         name:
@@ -438,6 +450,9 @@ components:
           nullable: true
         classification:
           type: string
+          enum:
+          - income
+          - expense
         account:
           "$ref": "#/components/schemas/Account"
         category:
@@ -502,6 +517,24 @@ components:
         account_col_label:
           type: string
           nullable: true
+        qty_col_label:
+          type: string
+          nullable: true
+        ticker_col_label:
+          type: string
+          nullable: true
+        price_col_label:
+          type: string
+          nullable: true
+        entity_type_col_label:
+          type: string
+          nullable: true
+        currency_col_label:
+          type: string
+          nullable: true
+        exchange_operating_mic_col_label:
+          type: string
+          nullable: true
         date_format:
           type: string
           nullable: true
@@ -509,6 +542,15 @@ components:
           type: string
           nullable: true
         signage_convention:
+          type: string
+          nullable: true
+        col_sep:
+          type: string
+          nullable: true
+        amount_type_strategy:
+          type: string
+          nullable: true
+        amount_type_inflow_value:
           type: string
           nullable: true
     ImportStats:
@@ -542,6 +584,9 @@ components:
           - MintImport
           - CategoryImport
           - RuleImport
+          - PdfImport
+          - QifImport
+          - SureImport
         status:
           type: string
           enum:
@@ -588,6 +633,9 @@ components:
           - MintImport
           - CategoryImport
           - RuleImport
+          - PdfImport
+          - QifImport
+          - SureImport
         status:
           type: string
           enum:
@@ -657,35 +705,6 @@ components:
       properties:
         data:
           "$ref": "#/components/schemas/ImportDetail"
-    MerchantDetail:
-      type: object
-      required:
-      - id
-      - name
-      - type
-      - created_at
-      - updated_at
-      properties:
-        id:
-          type: string
-          format: uuid
-        name:
-          type: string
-        type:
-          type: string
-          enum:
-          - FamilyMerchant
-          - ProviderMerchant
-        created_at:
-          type: string
-          format: date-time
-        updated_at:
-          type: string
-          format: date-time
-    MerchantCollection:
-      type: array
-      items:
-        "$ref": "#/components/schemas/MerchantDetail"
     Security:
       type: object
       required:
@@ -700,6 +719,7 @@ components:
           type: string
         name:
           type: string
+          nullable: true
     Trade:
       type: object
       required:
@@ -722,6 +742,7 @@ components:
           format: date
         amount:
           type: string
+          description: Formatted monetary amount (e.g. "$1,234.56")
         currency:
           type: string
         name:
@@ -731,11 +752,14 @@ components:
           nullable: true
         qty:
           type: number
+          description: Quantity of shares or units traded. Negative for sells.
         price:
           type: string
+          description: Formatted price per unit
         investment_activity_label:
           type: string
           nullable: true
+          description: Activity label such as Buy, Sell, Dividend, etc.
         account:
           "$ref": "#/components/schemas/Account"
         security:
@@ -790,15 +814,19 @@ components:
           format: date
         qty:
           type: number
+          description: Number of shares or units held
         price:
           type: string
+          description: Formatted price per unit
         amount:
           type: string
+          description: Formatted total value
         currency:
           type: string
         cost_basis_source:
           type: string
           nullable: true
+          description: Source of cost basis calculation
         account:
           "$ref": "#/components/schemas/Account"
         security:
@@ -806,6 +834,7 @@ components:
         avg_cost:
           type: string
           nullable: true
+          description: Formatted average cost basis per unit, if available
         created_at:
           type: string
           format: date-time
@@ -831,6 +860,7 @@ components:
       - date
       - amount
       - currency
+      - kind
       - account
       - created_at
       - updated_at
@@ -838,11 +868,13 @@ components:
         id:
           type: string
           format: uuid
+          description: The entry ID for this valuation
         date:
           type: string
           format: date
         amount:
           type: string
+          description: Formatted balance amount
         currency:
           type: string
         notes:
@@ -850,7 +882,7 @@ components:
           nullable: true
         kind:
           type: string
-          nullable: true
+          description: The type of valuation (e.g. reconciliation)
         account:
           "$ref": "#/components/schemas/Account"
         created_at:
@@ -859,7 +891,37 @@ components:
         updated_at:
           type: string
           format: date-time
-    BalanceSheet:
+    MerchantDetail:
+      type: object
+      required:
+      - id
+      - name
+      - type
+      - created_at
+      - updated_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        type:
+          type: string
+          enum:
+          - FamilyMerchant
+          - ProviderMerchant
+          description: Whether the merchant was created by the user or a provider
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    MerchantCollection:
+      type: array
+      items:
+        "$ref": "#/components/schemas/MerchantDetail"
+    BalanceSheetResponse:
       type: object
       required:
       - currency
@@ -869,20 +931,23 @@ components:
       properties:
         currency:
           type: string
+          description: The family's primary currency code
         net_worth:
           type: object
-          additionalProperties: true
+          description: Net worth as a Money object
         assets:
           type: object
-          additionalProperties: true
+          description: Total assets as a Money object
         liabilities:
           type: object
-          additionalProperties: true
+          description: Total liabilities as a Money object
     SyncResponse:
       type: object
       required:
       - id
       - status
+      - syncable_type
+      - syncable_id
       - message
       properties:
         id:
@@ -890,6 +955,7 @@ components:
           format: uuid
         status:
           type: string
+          description: Current sync status
         syncable_type:
           type: string
         syncable_id:
@@ -976,33 +1042,6 @@ paths:
             application/json:
               schema:
                 "$ref": "#/components/schemas/AccountCollection"
-  "/api/v1/accounts/{id}":
-    parameters:
-    - name: id
-      in: path
-      required: true
-      description: Account ID
-      schema:
-        type: string
-    get:
-      summary: Retrieve an account
-      tags:
-      - Accounts
-      security:
-      - apiKeyAuth: []
-      responses:
-        '200':
-          description: account retrieved
-          content:
-            application/json:
-              schema:
-                "$ref": "#/components/schemas/AccountDetail"
-        '404':
-          description: account not found
-          content:
-            application/json:
-              schema:
-                "$ref": "#/components/schemas/ErrorResponse"
   "/api/v1/categories":
     get:
       summary: List categories
@@ -1075,47 +1114,6 @@ paths:
                 "$ref": "#/components/schemas/CategoryDetail"
         '404':
           description: category not found
-          content:
-            application/json:
-              schema:
-                "$ref": "#/components/schemas/ErrorResponse"
-  "/api/v1/merchants":
-    get:
-      summary: List merchants
-      tags:
-      - Merchants
-      security:
-      - apiKeyAuth: []
-      responses:
-        '200':
-          description: merchants listed
-          content:
-            application/json:
-              schema:
-                "$ref": "#/components/schemas/MerchantCollection"
-  "/api/v1/merchants/{id}":
-    parameters:
-    - name: id
-      in: path
-      required: true
-      description: Merchant ID
-      schema:
-        type: string
-    get:
-      summary: Retrieve a merchant
-      tags:
-      - Merchants
-      security:
-      - apiKeyAuth: []
-      responses:
-        '200':
-          description: merchant retrieved
-          content:
-            application/json:
-              schema:
-                "$ref": "#/components/schemas/MerchantDetail"
-        '404':
-          description: merchant not found
           content:
             application/json:
               schema:
@@ -1379,6 +1377,9 @@ paths:
           - MintImport
           - CategoryImport
           - RuleImport
+          - PdfImport
+          - QifImport
+          - SureImport
       responses:
         '200':
           description: imports filtered by type
@@ -1425,6 +1426,9 @@ paths:
                   - MintImport
                   - CategoryImport
                   - RuleImport
+                  - PdfImport
+                  - QifImport
+                  - SureImport
                   description: Import type (defaults to TransactionImport)
                 account_id:
                   type: string
@@ -1452,6 +1456,27 @@ paths:
                 notes_col_label:
                   type: string
                   description: Header name for the notes column
+                account_col_label:
+                  type: string
+                  description: Header name for the account column
+                qty_col_label:
+                  type: string
+                  description: Header name for the quantity column (trade imports)
+                ticker_col_label:
+                  type: string
+                  description: Header name for the ticker column (trade imports)
+                price_col_label:
+                  type: string
+                  description: Header name for the price column (trade imports)
+                entity_type_col_label:
+                  type: string
+                  description: Header name for the entity type column (account imports)
+                currency_col_label:
+                  type: string
+                  description: Header name for the currency column
+                exchange_operating_mic_col_label:
+                  type: string
+                  description: Header name for the exchange MIC column (trade imports)
                 date_format:
                   type: string
                   description: Date format pattern (e.g., "%m/%d/%Y")
@@ -1475,6 +1500,13 @@ paths:
                   - ","
                   - ";"
                   description: Column separator
+                amount_type_strategy:
+                  type: string
+                  description: Strategy for determining transaction direction
+                amount_type_inflow_value:
+                  type: string
+                  description: Value that indicates an inflow when using column-based
+                    amount type strategy
         required: true
   "/api/v1/imports/{id}":
     parameters:
@@ -1967,6 +1999,7 @@ paths:
         description: Filter by account ID
         schema:
           type: string
+          format: uuid
       - name: account_ids
         in: query
         required: false
@@ -2034,17 +2067,17 @@ paths:
                     account_id:
                       type: string
                       format: uuid
-                      description: Investment or crypto account ID
-                    date:
-                      type: string
-                      format: date
-                      description: Trade date
+                      description: Account ID (must be an investment or crypto account)
                     type:
                       type: string
                       enum:
                       - buy
                       - sell
                       description: Trade type
+                    date:
+                      type: string
+                      format: date
+                      description: Trade date
                     qty:
                       type: number
                       description: Quantity (must be positive)
@@ -2060,21 +2093,21 @@ paths:
                       description: Security ID (provide one of security_id, ticker, or manual_ticker)
                     ticker:
                       type: string
-                      description: Ticker symbol (e.g. "AAPL" or "AAPL|XNAS")
+                      description: Security ticker symbol
                     manual_ticker:
                       type: string
-                      description: Manual or custom ticker
+                      description: Manual ticker for unlisted securities
                     investment_activity_label:
                       type: string
-                      description: Activity label for the trade
+                      description: Activity label (e.g. Buy, Sell, Dividend)
                     category_id:
                       type: string
                       format: uuid
                       description: Category ID
                   required:
                   - account_id
-                  - date
                   - type
+                  - date
                   - qty
                   - price
               required:
@@ -2144,13 +2177,11 @@ paths:
                   properties:
                     name:
                       type: string
-                      description: Trade name
                     date:
                       type: string
                       format: date
                     amount:
                       type: number
-                      description: Trade amount
                     currency:
                       type: string
                     notes:
@@ -2158,20 +2189,14 @@ paths:
                     nature:
                       type: string
                       enum:
+                      - buy
                       - sell
                       - inflow
-                      - buy
                       - outflow
-                      description: Trade direction
-                    type:
-                      type: string
-                      enum:
-                      - buy
-                      - sell
-                      description: Alias for nature
+                      description: Trade direction (sell/inflow vs buy/outflow)
                     qty:
                       type: number
-                      description: Quantity
+                      description: Quantity of shares or units
                     price:
                       type: number
                       description: Price per unit
@@ -2226,6 +2251,7 @@ paths:
         description: Filter by account ID
         schema:
           type: string
+          format: uuid
       - name: account_ids
         in: query
         required: false
@@ -2299,6 +2325,7 @@ paths:
   "/api/v1/valuations":
     post:
       summary: Create valuation
+      description: Create a new balance reconciliation for an account.
       tags:
       - Valuations
       security:
@@ -2335,14 +2362,14 @@ paths:
                     account_id:
                       type: string
                       format: uuid
-                      description: Account to set the valuation for
+                      description: Account ID (required)
                     amount:
                       type: number
-                      description: Balance or valuation amount
+                      description: Balance amount (required)
                     date:
                       type: string
                       format: date
-                      description: Valuation date
+                      description: Valuation date (required)
                     notes:
                       type: string
                       description: Optional notes
@@ -2358,7 +2385,7 @@ paths:
     - name: id
       in: path
       required: true
-      description: Valuation ID
+      description: Valuation entry ID
       schema:
         type: string
     get:
@@ -2382,6 +2409,7 @@ paths:
                 "$ref": "#/components/schemas/ErrorResponse"
     patch:
       summary: Update a valuation
+      description: Update balance and/or notes. When updating the balance, both amount and date must be provided together.
       tags:
       - Valuations
       security:
@@ -2417,33 +2445,62 @@ paths:
                   properties:
                     amount:
                       type: number
-                      description: New valuation amount (required together with date)
+                      description: Balance amount (required with date)
                     date:
                       type: string
                       format: date
-                      description: New valuation date (required together with amount)
+                      description: Valuation date (required with amount)
                     notes:
                       type: string
-                      description: Updated notes (can be updated independently)
+              required:
+              - valuation
         required: true
-  "/api/v1/balance_sheet":
+  "/api/v1/merchants":
     get:
-      summary: Get balance sheet
+      summary: List merchants
+      description: Returns all family-owned and provider merchants associated with the user's transactions.
       tags:
-      - Balance Sheet
+      - Merchants
       security:
       - apiKeyAuth: []
       responses:
         '200':
-          description: balance sheet retrieved
+          description: merchants listed
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/BalanceSheet"
+                "$ref": "#/components/schemas/MerchantCollection"
+  "/api/v1/merchants/{id}":
+    parameters:
+    - name: id
+      in: path
+      required: true
+      description: Merchant ID
+      schema:
+        type: string
+    get:
+      summary: Retrieve a merchant
+      tags:
+      - Merchants
+      security:
+      - apiKeyAuth: []
+      responses:
+        '200':
+          description: merchant retrieved
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/MerchantDetail"
+        '404':
+          description: merchant not found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ErrorResponse"
   "/api/v1/sync":
     post:
       summary: Trigger sync
-      description: Queue a sync for all accounts in the family. This also applies all active rules after syncing.
+      description: Queues a full family sync that applies all active rules, syncs all accounts, and auto-matches transfers.
       tags:
       - Sync
       security:
@@ -2455,44 +2512,53 @@ paths:
             application/json:
               schema:
                 "$ref": "#/components/schemas/SyncResponse"
-        '500':
-          description: internal server error
-          content:
-            application/json:
-              schema:
-                "$ref": "#/components/schemas/ErrorResponse"
   "/api/v1/usage":
     get:
       summary: Get API usage
-      description: Returns API key details and rate limit information. Only available when authenticating with an API key.
+      description: Returns API key details and rate limit information. Detailed usage is only available when authenticating with an API key.
       tags:
       - Usage
       security:
       - apiKeyAuth: []
       responses:
         '200':
-          description: usage information retrieved
+          description: usage information
           content:
             application/json:
               schema:
                 "$ref": "#/components/schemas/UsageResponse"
+  "/api/v1/balance_sheet":
+    get:
+      summary: Get balance sheet
+      description: Returns the family's net worth, total assets, and total liabilities in the family's primary currency.
+      tags:
+      - Balance Sheet
+      security:
+      - apiKeyAuth: []
+      responses:
+        '200':
+          description: balance sheet data
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BalanceSheetResponse"
   "/api/v1/users/reset":
     delete:
-      summary: Reset account
-      description: Resets the family account data. Requires admin privileges.
+      summary: Reset account data
+      description: Initiates an asynchronous reset of all family data. Requires admin role.
       tags:
       - Users
       security:
       - apiKeyAuth: []
       responses:
         '200':
-          description: account reset initiated
+          description: reset initiated
           content:
             application/json:
               schema:
                 "$ref": "#/components/schemas/DeleteResponse"
         '403':
-          description: forbidden - admin privileges required
+          description: forbidden - admin role required
           content:
             application/json:
               schema:
@@ -2500,7 +2566,7 @@ paths:
   "/api/v1/users/me":
     delete:
       summary: Delete account
-      description: Permanently deletes the authenticated user's account.
+      description: Deactivates the current user's account.
       tags:
       - Users
       security:

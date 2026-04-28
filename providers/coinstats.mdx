@@ -4,21 +4,21 @@ description: "Sync cryptocurrency wallets using CoinStats integration"
 ---
 
 
-CoinStats is a third-party provider that allows you to sync cryptocurrency wallet balances and transactions into Sure. This integration uses the CoinStats OpenAPI to fetch data from multiple blockchain networks.
+CoinStats is a third-party provider that allows you to sync cryptocurrency wallet balances, exchange portfolios, and transactions into Sure. This integration uses the CoinStats OpenAPI to fetch data from multiple blockchain networks and centralized exchanges.
 
 ## How it works
 
 When you connect through CoinStats, Sure syncs:
 
 - **Wallet balances** across multiple tokens
-- **Exchange portfolios** from connected exchanges
-- **Transaction history** from wallets and exchanges
+- **Exchange portfolios** from centralized exchanges
+- **Transaction history** from both wallets and exchanges
 - **Real-time price data** for all holdings
 
 The integration supports:
-- Multiple blockchain networks (Ethereum, Bitcoin, and more)
-- Exchange accounts (Coinbase, Binance, Kraken, etc.)
-- Automatic portfolio normalization for linked investments
+- Multiple blockchain networks including Ethereum, Bitcoin, and many others
+- Centralized exchange accounts (Binance, Coinbase, Kraken, etc.)
+- Linked investment charts normalized across all connected accounts
 
 ## Currency storage approach
 
@@ -70,12 +70,12 @@ Once connected, Sure will automatically sync your wallet balances and transactio
 ## Supported features
 
 - **Multiple blockchains**: Connect wallets from different blockchain networks
-- **Exchange portfolios**: Sync holdings from connected cryptocurrency exchanges
-- **Bulk syncing**: Fetch balances and transactions for multiple wallets in a single request
+- **Exchange portfolios**: Sync holdings and transactions from centralized exchanges
+- **Bulk syncing**: Fetch balances and transactions for multiple wallets and exchanges in a single request
 - **Automatic updates**: Sync runs periodically to keep your data current
 - **Transaction history**: Import historical transactions from wallets and exchanges
 - **Token balances**: Track balances across multiple tokens in each wallet
-- **Chart normalization**: Linked investment charts are automatically normalized during batch processing
+- **Normalized charts**: Investment charts are automatically normalized and linked across all CoinStats accounts
 
 ## Limitations
 

@@ -46,25 +46,30 @@ Configure third-party integrations and data providers from Settings → Provider
 
 Configure AI features like chat and transaction rules from Settings → Self-Hosting. See the [LLM support documentation](/llm-support) for more details.
 
-## Mobile app settings
+## Display preferences
 
 ### Theme selection
 
-The Sure mobile app supports multiple theme options to match your preferences:
+Sure supports multiple theme options to match your preference:
 
-- **Light mode**: Bright interface optimized for daytime use
-- **Dark mode**: Dark interface that's easier on the eyes in low-light conditions
-- **System**: Automatically matches your device's system theme setting
+**Available themes:**
+- **Light** - Light color scheme for bright environments
+- **Dark** - Dark color scheme for low-light environments
+- **System** - Automatically matches your device's system theme
 
-To change the theme:
+**To change your theme:**
 
-1. Open the mobile app
-2. Navigate to Settings
-3. Select **Theme**
-4. Choose Light, Dark, or System
-5. The theme updates immediately
+1. Navigate to Settings
+2. Find the "Theme" or "Appearance" section
+3. Select your preferred theme (Light, Dark, or System)
+4. The theme applies immediately
 
-The app remembers your preference across sessions.
+The theme setting is saved to your account and syncs across all your devices.
+
+> [!TIP]
+> The "System" option automatically switches between light and dark themes based on your device's settings, providing the best experience throughout the day.
+
+## Mobile app settings
 
 ### AI chat improvements
 
@@ -74,6 +79,19 @@ The mobile app includes an enhanced AI chat experience:
 - **Smooth animations**: The typing indicator uses a classic three-dot bounce animation
 - **Auto-scroll**: The chat automatically scrolls to show new messages as they arrive
 - **Improved flow**: Chat creation is now lazy-loaded on first message send, eliminating loading delays
+
+## Data exports
+
+Sure allows you to export your financial data for backup or analysis purposes. When you create an export, the page automatically refreshes to show the latest status.
+
+### Export status tracking
+
+The export list page automatically polls for updates when exports are in progress:
+- **Processing exports**: The page checks for updates every 3 seconds
+- **Completed exports**: Auto-refresh stops once all exports are complete
+- **Download ready**: Download buttons appear when exports finish processing
+
+This ensures you always see the current status without manually refreshing the page.
 
 ## Account preferences
 

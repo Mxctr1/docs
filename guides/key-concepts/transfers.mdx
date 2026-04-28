@@ -137,15 +137,23 @@ The transfer is valid because one amount is negative and one is positive, even t
 
 ## Transfer Summary Totals
 
-When viewing transactions filtered by transfer type, the summary bar displays **Inflow** and **Outflow** totals instead of Income and Expenses:
+When viewing your transaction list filtered by transfers, Sure displays **Inflow** and **Outflow** totals instead of the standard Income and Expenses labels.
 
-- **Inflow**: Total money coming into accounts from transfers
-- **Outflow**: Total money leaving accounts from transfers
+### How It Works
 
-This provides a clear view of money movement when analyzing transfer activity.
+**Transfer-only filter:**
+- When filtering exclusively by "Transfer" type, the summary bar shows:
+  - **Inflow**: Total positive transfer amounts (money coming in)
+  - **Outflow**: Total negative transfer amounts (money going out)
+
+**Mixed filters:**
+- When filtering by transfers along with other transaction types (income, expenses), the summary bar shows standard Income/Expenses labels
+- Transfer amounts are excluded from these totals since they don't represent actual income or spending
+
+This helps you understand your cash movement patterns when reviewing transfers in isolation.
 
 > [!NOTE]
-> When filtering by both transfers and other transaction types (income/expense), the summary bar shows Income and Expenses, and transfer amounts are excluded from those totals to avoid confusion.
+> When filtering by both transfers and other transaction types, transfer amounts are excluded from income and expense totals to avoid confusion.
 
 ## How Transfers Affect Budgets
 

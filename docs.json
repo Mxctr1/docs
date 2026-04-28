@@ -36,7 +36,9 @@
             "group": "App features",
             "pages": [
               "guides/app-features/budgets",
+              "guides/app-features/csv-imports",
               "features/recurring-transactions",
+              "guides/app-features/family-sharing",
               "guides/app-features/settings"
             ]
           },
@@ -85,8 +87,7 @@
             "group": "Accounts",
             "openapi": "/openapi.yaml",
             "pages": [
-              "GET /api/v1/accounts",
-              "GET /api/v1/accounts/{id}"
+              "GET /api/v1/accounts"
             ]
           },
           {
@@ -105,22 +106,6 @@
             ]
           },
           {
-            "group": "Holdings",
-            "openapi": "/openapi.yaml",
-            "pages": [
-              "GET /api/v1/holdings",
-              "GET /api/v1/holdings/{id}"
-            ]
-          },
-          {
-            "group": "Merchants",
-            "openapi": "/openapi.yaml",
-            "pages": [
-              "GET /api/v1/merchants",
-              "GET /api/v1/merchants/{id}"
-            ]
-          },
-          {
             "group": "Chats",
             "openapi": "/openapi.yaml",
             "pages": [
@@ -134,12 +119,35 @@
             ]
           },
           {
+            "group": "Holdings",
+            "openapi": "/openapi.yaml",
+            "pages": [
+              "GET /api/v1/holdings",
+              "GET /api/v1/holdings/{id}"
+            ]
+          },
+          {
             "group": "Imports",
             "openapi": "/openapi.yaml",
             "pages": [
               "GET /api/v1/imports",
               "POST /api/v1/imports",
               "GET /api/v1/imports/{id}"
+            ]
+          },
+          {
+            "group": "Merchants",
+            "openapi": "/openapi.yaml",
+            "pages": [
+              "GET /api/v1/merchants",
+              "GET /api/v1/merchants/{id}"
+            ]
+          },
+          {
+            "group": "Sync",
+            "openapi": "/openapi.yaml",
+            "pages": [
+              "POST /api/v1/sync"
             ]
           },
           {
@@ -176,6 +184,13 @@
             ]
           },
           {
+            "group": "Usage",
+            "openapi": "/openapi.yaml",
+            "pages": [
+              "GET /api/v1/usage"
+            ]
+          },
+          {
             "group": "Valuations",
             "openapi": "/openapi.yaml",
             "pages": [
@@ -185,10 +200,11 @@
             ]
           },
           {
-            "group": "Sync",
+            "group": "Users",
             "openapi": "/openapi.yaml",
             "pages": [
-              "POST /api/v1/sync"
+              "DELETE /api/v1/users/reset",
+              "DELETE /api/v1/users/me"
             ]
           }
         ]

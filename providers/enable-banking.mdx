@@ -32,6 +32,22 @@ To connect your European bank accounts:
 
 If you want to connect another bank, or connect the same bank with a different login, use **Add Connection** after your first Enable Banking connection is working. Sure stores each Enable Banking connection separately, so you can sync, reconnect, or remove them independently.
 
+### Using one provider config across different countries
+
+You do **not** need to create a separate Enable Banking provider configuration for each country.
+
+Use one shared Enable Banking configuration with your application ID and client certificate, then use **Add Connection** for each additional bank you want to link.
+
+When adding each connection:
+
+1. Start from **Settings -> Providers -> Enable Banking**
+2. Click **Add Connection**
+3. Choose the country for that specific bank
+4. Select the bank in that country
+5. Complete authorization
+
+Example: you can keep one Enable Banking provider config in Sure, then add one connection for a Spanish bank and another connection for a German bank using the same credentials.
+
 ## Features
 
 ### Account access
